@@ -1,5 +1,4 @@
-from flask import Flask
-from flask import request
+from flask import Flask, request, render_template
 
 from whoosh.qparser import *
 from whoosh.index import open_dir
@@ -10,7 +9,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def search_page():
-    return "<p>Hello, World!</p>"
+    return render_template('start.html')
 
 @app.route("/search")
 def results_page():
