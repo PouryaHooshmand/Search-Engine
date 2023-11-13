@@ -35,6 +35,7 @@ def results_page():
         #return search_query
         query = parser.parse(search_query)
         results = searcher.search(query, limit = 20)
-        return "\n".join([str(r.values()) for r in results])
+        
+        return render_template('results.html', results=results)
 
         

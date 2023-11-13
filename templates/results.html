@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Search Engine</title>
+    </head>
+    <body>
+        <form action='search' method='get'>
+            <input name='q' type='text'>
+            <input name='site' type='text'>
+            <input type="submit" value="search">
+        </form>
+
+        <h1>Results</h1>
+        <ul>
+            {% for result in results %}
+               <li> <a href={{ result.get('link') }}>{{ result.get('title') }}</a> 
+            {% endfor %}
+        </ul>      
+    </body>
+</html>
