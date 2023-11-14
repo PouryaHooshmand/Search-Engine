@@ -13,7 +13,8 @@
         <h1>Results</h1>
         <ul>
             {% for result in results %}
-               <li> <a href={{ result.get('link') }}>{{ result.get('title') }}</a> 
+               <li> <a href={{ result[2] }}>{{ result[1] }}</a> 
+                {{result[-1][:[200, result[-1]|length]|min]}}
             {% endfor %}
         </ul>      
     </body>

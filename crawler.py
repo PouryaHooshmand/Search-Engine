@@ -6,6 +6,7 @@ from whoosh.fields import *
 from urllib.parse import urlparse
 import os
 import datetime
+from database import *
 
 
 link = "https://vm009.rz.uos.de/crawl/index.html"
@@ -22,8 +23,14 @@ def crawler(url, index_dir, check_ext_links = False):
         ix = open_dir(index_dir,)
     else:
         #create index with unique urls to avoid duplicates
-        schema = Schema(link = ID(stored=True, unique=True) ,title=TEXT(stored=True), content=TEXT, last_updated=TEXT(stored=True))
+        schema = Schema(id = NUMERIC(int, stored=True, unique=True), content=TEXT)
         ix = create_in(index_dir, schema)
+
+    #create database connection
+    connection = create_connection("database.sqlite")
+
+    #create a table for websites data if it doesn't exist
+    create_table(connection, "sites", ("title", "link", "last_updated", "content"), ("TEXT", "TEXT", "INTEGER", "TEXT"), True)
 
     writer = ix.writer()
 
@@ -49,7 +56,14 @@ def crawler(url, index_dir, check_ext_links = False):
             links_queue.extend(web_links)
 
             checked_links.append(link)
-            writer.update_document(link=link, title=soup.head.title.text, content=soup.body.text, last_updated = str(datetime.datetime.now()))
+
+            cursor = add_to_table(
+                connection, 'sites', 
+                [str(soup.head.title.text), str(link), int(datetime.datetime.now().timestamp()), str(soup.body.text)],
+                1, 'link')
+            site_id = cursor.lastrowid
+
+            writer.update_document(id=site_id, content=soup.body.text)
 
     writer.commit()
 

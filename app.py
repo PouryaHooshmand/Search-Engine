@@ -5,7 +5,10 @@ from whoosh.index import open_dir
 from whoosh.fields import *
 from whoosh.analysis import STOP_WORDS
 
+from database import create_connection, get_row
+
 app = Flask(__name__)
+
 
 @app.route("/")
 def search_page():
@@ -28,14 +31,17 @@ def results_page():
 
         search_words = search_text.split()
         search_words = ["*" + _ + "*" for _ in search_words if _ not in STOP_WORDS]
-        if search_website:
-            search_query = u'link:*'+search_website+u'* content:(' + u' OR '.join(search_words) + u')'
-        else:
-            search_query = u'content:(' + u' OR '.join(search_words) + u')'
+        search_query = u'content:(' + u' OR '.join(search_words) + u')'
         #return search_query
         query = parser.parse(search_query)
         results = searcher.search(query, limit = 20)
-        
+        id_list = '('+ ', '.join([str(result.get('id')) for result in results])+')'
+        connection = create_connection("database.sqlite")
+        if search_website:
+            results = get_row(connection, 'sites', str(id_list), search_website)
+        else:
+            results = get_row(connection, 'sites', str(id_list))
+
         return render_template('results.html', results=results)
 
         
