@@ -30,7 +30,6 @@ def results_page():
         parser.add_plugin(SequencePlugin())
 
         search_words = search_text.split()
-        search_words = ["*" + _ + "*" for _ in search_words if _ not in STOP_WORDS]
         search_query = u'content:(' + u' OR '.join(search_words) + u')'
         #return search_query
         query = parser.parse(search_query)

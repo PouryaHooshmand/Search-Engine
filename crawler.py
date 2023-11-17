@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from whoosh.index import create_in, exists_in, open_dir
 from whoosh.fields import *
+from whoosh.analysis import StemmingAnalyzer
 from urllib.parse import urlparse
 import os
 import datetime
@@ -23,7 +24,7 @@ def crawler(url, index_dir, check_ext_links = False):
         ix = open_dir(index_dir,)
     else:
         #create index with unique urls to avoid duplicates
-        schema = Schema(id = NUMERIC(int, stored=True, unique=True), content=TEXT)
+        schema = Schema(id = NUMERIC(int, stored=True, unique=True), content=TEXT(analyzer=StemmingAnalyzer()))
         ix = create_in(index_dir, schema)
 
     #create database connection
