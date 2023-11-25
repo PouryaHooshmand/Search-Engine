@@ -1,14 +1,30 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Search Engine</title>
-    </head>
-    <body>
-        <h1>Search</h1>
-        <form action='search' method='get'>
-            <input name='q' type='text' placeholder="Search">
-            <input name='site' type='text' placeholder="Website(optional)">
-            <input type="submit" value="search">
-        </form>      
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/start.css') }}">
+    <title>Search Engine</title>
+</head>
+<body>
+    <div id="container">
+        <header>
+            <h1 id="title">Search Engine</h1>
+        </header>
+
+        <div id="search-container">
+            <input type="text" id="search-input" placeholder="Enter your search">
+            <button id="search-button" onclick="search()">Search</button>
+            <div id="advanced-search-button" onmouseover="showAdvancedSearch()" onclick="toggleAdvancedSearch()">
+                <span>&#9660;</span>
+                <span class="tooltiptext">Advanced Search</span>
+            </div>
+            <input type="text" id="website-input" placeholder="Enter website (optional)" style="display: none;">
+        </div>
+
+        <div id="results-container"></div>
+    </div>
+
+    <script src="{{ url_for('static',filename='scripts/start.js') }}"></script>
+</body>
 </html>

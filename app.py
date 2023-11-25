@@ -17,7 +17,7 @@ def search_page():
 @app.route("/search")
 def results_page():
     search_text = request.args.get('q')
-    search_website = request.args.get('site')
+    search_website = request.args.get('website')
 
     ix = open_dir("indexdir")
     with ix.searcher() as searcher:
