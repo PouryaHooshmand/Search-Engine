@@ -1,21 +1,38 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Search Engine</title>
-    </head>
-    <body>
-        <form action='search' method='get'>
-            <input name='q' type='text' placeholder="Search">
-            <input name='website' type='text' placeholder="Website(optional)">
-            <input type="submit" value="search">
-        </form>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/results.css') }}">
+    <title>Search Engine Results</title>
+</head>
+<body>
+    <header>
+        <div id="searchContainer">
+            <span><a href="/" style="color: inherit; text-decoration: inherit;">Search Engine</a></span>
+            <input type="text" id="searchInput" placeholder="Search...">
+            <input type="text" id="advSearchInput" placeholder="Website (optional)">
+            <button id="searchBtn" onclick="search()">Search</button>
+        </div>
+        <button id="advSearchBtn" onclick="toggleAdvancedSearch()">Advanced Search</button>
+    </header>
 
-        <h1>Results</h1>
-        <ul>
-            {% for result in results %}
-               <li> <a href={{ result[2] }}>{{ result[1] }}</a> 
-                {{result[-1][:[200, result[-1]|length]|min]}}
-            {% endfor %}
-        </ul>      
-    </body>
+    <!-- Your search results content goes here -->
+    <div id="resultsContainer">
+        <h2>Results</h2>
+        {% for result in results %}
+            <div class="resultBox">  
+                <div class="resultTitle"><a href={{ result[2] }}>{{ result[1] }}</div>
+                <a href="{{ result[2] }}">{{ result[2] }}</a>
+                <div class="resultDescription">{{result[-1][:[500, result[-1]|length]|min]}}</div>
+            </div>
+        {% endfor %}
+
+        <!-- Initial search results in HTML -->
+        
+
+    </div>
+
+    <script src="{{ url_for('static',filename='scripts/results.js') }}"></script>
+</body>
 </html>
