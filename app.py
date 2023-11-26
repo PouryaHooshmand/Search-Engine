@@ -7,6 +7,8 @@ from whoosh.analysis import STOP_WORDS
 
 from database import create_connection, get_row
 
+from spellchecker import SpellChecker
+
 app = Flask(__name__)
 
 
@@ -16,8 +18,16 @@ def search_page():
 
 @app.route("/search")
 def results_page():
+    spell = SpellChecker()
     search_text = request.args.get('q')
     search_website = request.args.get('website')
+
+    spell_checked_text = " ".join([spell.correction(word) for word in search_text.split()])
+    if spell_checked_text==search_text:
+        is_spelling_correct = True
+    else:
+        is_spelling_correct = False
+
 
     ix = open_dir("indexdir")
     with ix.searcher() as searcher:
@@ -41,6 +51,7 @@ def results_page():
         else:
             results = get_row(connection, 'sites', str(id_list))
 
-        return render_template('results.html', results=results)
+        return render_template('results.html', results=results, is_spelling_correct=is_spelling_correct,
+                                 spell_checked_text=spell_checked_text, website=search_website)
 
         

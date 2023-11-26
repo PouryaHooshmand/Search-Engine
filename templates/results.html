@@ -19,10 +19,19 @@
 
     <!-- Your search results content goes here -->
     <div id="resultsContainer">
-        <h2>Results</h2>
+        {% if results|length==0 %}
+            <h2>No Results were found</h2>
+        {% else %}
+            <h2>Results</h2>
+        {% endif %}
+        
+        {% if not is_spelling_correct %}
+            <h3>Did you mean: <a href="{{ url_for('results_page', q=spell_checked_text, website=website)}}">{{spell_checked_text}}</a></h3>
+        {% endif %}
+        
         {% for result in results %}
             <div class="resultBox">  
-                <div class="resultTitle"><a href={{ result[2] }}>{{ result[1] }}</div>
+                <div class="resultTitle"><a href="{{ result[2] }}">{{ result[1] }}</a></div>
                 <a href="{{ result[2] }}">{{ result[2] }}</a>
                 <div class="resultDescription">{{result[-1][:[500, result[-1]|length]|min]}}</div>
             </div>
