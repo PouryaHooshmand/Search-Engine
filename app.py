@@ -6,6 +6,7 @@ from whoosh.fields import *
 from whoosh.analysis import STOP_WORDS
 
 from database import create_connection, get_row
+from page_ranking import rank_pages
 
 from spellchecker import SpellChecker
 
@@ -50,6 +51,9 @@ def results_page():
             results = get_row(connection, 'sites', str(id_list), search_website)
         else:
             results = get_row(connection, 'sites', str(id_list))
+        
+        page_rankings = rank_pages(search_text, [result[-1] for result in results])
+        results = [x for _, x in sorted(zip(page_rankings, results))][::-1]
 
         return render_template('results.html', results=results, is_spelling_correct=is_spelling_correct,
                                  spell_checked_text=spell_checked_text, website=search_website)
