@@ -33,7 +33,7 @@
             <div class="resultBox">  
                 <div class="resultTitle"><a href="{{ result[2] }}">{{ result[1] }}</a></div>
                 <a href="{{ result[2] }}">{{ result[2] }}</a>
-                <div class="resultDescription">{{result[-1][:[500, result[-1]|length]|min]}}</div>
+                <div class="resultDescription">{{result[-1]|safe}}</div>
             </div>
         {% endfor %}
 

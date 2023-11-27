@@ -44,16 +44,24 @@ def results_page():
         search_query = u'content:(' + u' OR '.join(search_words) + u')'
         #return search_query
         query = parser.parse(search_query)
-        results = searcher.search(query, limit = 20)
-        id_list = '('+ ', '.join([str(result.get('id')) for result in results])+')'
+        hits = searcher.search(query, limit = 20)
+        id_list = '('+ ', '.join([str(result.get('id')) for result in hits])+')'
         connection = create_connection("database.sqlite")
         if search_website:
             results = get_row(connection, 'sites', str(id_list), search_website)
         else:
             results = get_row(connection, 'sites', str(id_list))
+
         
         page_rankings = rank_pages(search_text, [result[-1] for result in results])
-        results = [x for _, x in sorted(zip(page_rankings, results))][::-1]
+        results = [list(x) for _, x in sorted(zip(page_rankings, results))][::-1]
+        hits = [x for _, x in sorted(zip(page_rankings, hits))][::-1]
+
+        for i in range(len(hits)):
+            content = results[i][-1]
+            hit = hits[i]
+            results[i][-1] = hit.highlights("content", text=content)
+        
 
         return render_template('results.html', results=results, is_spelling_correct=is_spelling_correct,
                                  spell_checked_text=spell_checked_text, website=search_website)
