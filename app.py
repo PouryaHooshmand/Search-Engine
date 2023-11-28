@@ -46,6 +46,10 @@ def results_page():
         #return search_query
         query = parser.parse(search_query)
         hits = searcher.search(query, limit = 20)
+
+        #hits.fragmenter.charlimit = None
+        hits.fragmenter.maxchars = 200
+        hits.fragmenter.surround = 40
         id_list = '('+ ', '.join([str(result.get('id')) for result in hits])+')'
         connection = create_connection(config.database_file)
         if search_website:
@@ -68,7 +72,7 @@ def results_page():
         for i in range(len(hits)):
             content = results[i][-1]
             hit = hits[i]
-            results[i][-1] = hit.highlights("content", text=content)
+            results[i][-1] = hit.highlights("content", text=content, top=4)
         
 
         return render_template('results.html', results=results, is_spelling_correct=is_spelling_correct,
