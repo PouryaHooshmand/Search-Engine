@@ -24,7 +24,7 @@ def results_page():
     search_text = request.args.get('q')
     search_website = request.args.get('website')
 
-    spell_checked_text = " ".join([spell.correction(word) for word in search_text.split()])
+    spell_checked_text = " ".join([spell.correction(word) if spell.correction(word) else word for word in search_text.split()])
     if spell_checked_text==search_text:
         is_spelling_correct = True
     else:
