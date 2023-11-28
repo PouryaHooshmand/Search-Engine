@@ -7,6 +7,7 @@ from whoosh.analysis import STOP_WORDS
 
 from database import create_connection, get_row
 from page_ranking import rank_pages
+import config
 
 from spellchecker import SpellChecker
 
@@ -30,7 +31,7 @@ def results_page():
         is_spelling_correct = False
 
 
-    ix = open_dir("indexdir")
+    ix = open_dir(config.idxdir)
     with ix.searcher() as searcher:
         parser = QueryParser("link", ix.schema)
         parser.add_plugin(FuzzyTermPlugin())
@@ -46,7 +47,7 @@ def results_page():
         query = parser.parse(search_query)
         hits = searcher.search(query, limit = 20)
         id_list = '('+ ', '.join([str(result.get('id')) for result in hits])+')'
-        connection = create_connection("database.sqlite")
+        connection = create_connection(config.database_file)
         if search_website:
             results = get_row(connection, 'sites', str(id_list), search_website)
         else:
@@ -55,7 +56,7 @@ def results_page():
         
         page_rankings = rank_pages(search_text, [result[-1] for result in results])
         results = [list(x) for _, x in sorted(zip(page_rankings, results))][::-1]
-        hits = [x for _, x in sorted(zip(page_rankings, hits))][::-1]
+        hits = [x for _, x in sorted(zip(page_rankings, hits), key=lambda x: x[0])][::-1]
 
         for i in range(len(hits)):
             content = results[i][-1]
