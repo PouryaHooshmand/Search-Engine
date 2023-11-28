@@ -18,3 +18,11 @@ function search() {
     window.location.href = 'search?q=' + encodeURIComponent(searchTerm) +
                            '&website=' + encodeURIComponent(websiteTerm);
 }
+
+function enableButton() {
+    if(document.getElementById("searchInput").value==="") { 
+           document.getElementById('searchBtn').disabled = true; 
+       } else { 
+           document.getElementById('searchBtn').disabled = false;
+       }
+   }

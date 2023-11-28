@@ -33,3 +33,11 @@ function toggleAdvancedSearch() {
 
 }
 
+function enableButton() {
+    if(document.getElementById("search-input").value==="") { 
+           document.getElementById('search-button').disabled = true; 
+       } else { 
+           document.getElementById('search-button').disabled = false;
+       }
+   }
+

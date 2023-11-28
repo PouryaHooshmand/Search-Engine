@@ -13,8 +13,8 @@
         </header>
 
         <div id="search-container">
-            <input type="text" id="search-input" placeholder="Enter your search">
-            <button id="search-button" onclick="search()">Search</button>
+            <input type="text" id="search-input" onkeyup="enableButton()" placeholder="Enter your search">
+            <button id="search-button" onclick="search()" disabled>Search</button>
             <div id="advanced-search-button" onmouseover="showAdvancedSearch()" onclick="toggleAdvancedSearch()">
                 <span>&#9660;</span>
                 <span class="tooltiptext">Advanced Search</span>
