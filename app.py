@@ -55,6 +55,13 @@ def results_page():
 
         
         page_rankings = rank_pages(search_text, [result[-1] for result in results])
+        page_rankings = [x/sum(page_rankings)*len(page_rankings) for x in page_rankings]
+
+        title_rankings = rank_pages(search_text, [result[1] for result in results])
+        title_rankings = [x/sum(title_rankings)*len(title_rankings) for x in title_rankings]
+
+        page_rankings = [page_rankings[i]+title_rankings[i] for i in range(len(page_rankings))]
+
         results = [list(x) for _, x in sorted(zip(page_rankings, results))][::-1]
         hits = [x for _, x in sorted(zip(page_rankings, hits), key=lambda x: x[0])][::-1]
 
