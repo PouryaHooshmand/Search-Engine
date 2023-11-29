@@ -5,7 +5,7 @@ from whoosh.index import open_dir
 from whoosh.fields import *
 from whoosh.analysis import STOP_WORDS
 
-from database import create_connection, get_row
+from database import *
 from page_ranking import rank_pages
 import config
 
@@ -59,12 +59,27 @@ def results_page():
 
         if results != []:
             page_rankings = rank_pages(search_text, [result[-1] for result in results])
-            page_rankings = [x/sum(page_rankings)*len(page_rankings) for x in page_rankings]
+            page_rankings = [x/sum(page_rankings) for x in page_rankings]
 
             title_rankings = rank_pages(search_text, [result[1] for result in results])
-            title_rankings = [x/sum(title_rankings)*len(title_rankings) for x in title_rankings]
+            title_rankings = [x/sum(title_rankings) for x in title_rankings]
 
-            page_rankings = [page_rankings[i]+title_rankings[i] for i in range(len(page_rankings))]
+            
+            refs_ranking = []
+            for res in results:
+                query = f"SELECT refs FROM sitelinks where link = '{res[2]}'"
+                refs = execute_read_query(connection, query)
+                if refs:
+                    refs = refs[0][0]
+                    refs_ranking.append(len(refs.split(',')))
+                else:
+                    refs_ranking.append(1e-7)
+
+            
+            refs_ranking = [x/sum(refs_ranking) for x in refs_ranking]
+            
+
+            page_rankings = [page_rankings[i]+title_rankings[i]+refs_ranking[i] for i in range(len(page_rankings))]
 
             results = [list(x) for _, x in sorted(zip(page_rankings, results))][::-1]
             hits = [x for _, x in sorted(zip(page_rankings, hits), key=lambda x: x[0])][::-1]

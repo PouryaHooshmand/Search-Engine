@@ -30,6 +30,7 @@ def crawler(url, index_dir, check_ext_links, count):
 
     #create a table for websites data if it doesn't exist
     create_table(connection, "sites", ("title", "link", "last_updated", "content"), ("TEXT", "TEXT", "INTEGER", "TEXT"), True)
+    create_table(connection, "sitelinks", ("link", "refs"), ("TEXT", "TEXT"), True)
 
     writer = ix.writer()
 
@@ -37,6 +38,7 @@ def crawler(url, index_dir, check_ext_links, count):
     base_url = config.base_url
     checked_links=[]
     links_queue=[url]
+    refs_to_page = {}
     
     i = 0
     while links_queue and i < count:
@@ -66,8 +68,24 @@ def crawler(url, index_dir, check_ext_links, count):
                 1, 'link')
             site_id = cursor.lastrowid
 
-            writer.update_document(id=site_id, content=soup.body.text)
+            for l in web_links:
+                if check_ext_links and (urlparse(l).netloc == urlparse(link).netloc):
+                    continue
+                if l in refs_to_page:
+                    refs_to_page[l] += f',{site_id}'
+                else: 
+                    refs_to_page[l] = str(site_id)
 
+            writer.update_document(id=site_id, content=soup.body.text)
+            print(f"{link} added to database")
+
+    for link in refs_to_page:
+        refs = ','.join(list(set(refs_to_page[link].split(','))))
+        query = f"SELECT refs FROM sitelinks where link = '{link}'"
+        prev_refs = execute_read_query(connection, query)
+        if prev_refs:
+            refs = ','.join(list(set(refs.split(',') + prev_refs[0][0].split(','))))
+        add_to_table(connection, 'sitelinks', [str(link), str(refs)], 0, 'link')
     writer.commit()
 
 crawler(config.link, config.idxdir, config.check_ext_links, config.count)

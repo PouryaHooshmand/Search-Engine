@@ -15,7 +15,7 @@ def rank_pages(search_term, results):
     # Calculate the cosine similarity between the vectors
     similarity = cosine_similarity(vectors)
 
-    return similarity[0][1:]
+    return [x+1e-7 for x in similarity[0][1:]]
 
 
 
