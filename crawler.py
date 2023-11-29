@@ -80,6 +80,8 @@ def crawler(url, index_dir, check_ext_links, count):
             print(f"{link} added to database")
 
     for link in refs_to_page:
+        if link not in checked_links:
+            continue
         refs = ','.join(list(set(refs_to_page[link].split(','))))
         query = f"SELECT refs FROM sitelinks where link = '{link}'"
         prev_refs = execute_read_query(connection, query)
