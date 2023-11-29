@@ -47,7 +47,7 @@ def results_page():
         query = parser.parse(search_query)
         hits = searcher.search(query, limit = 20)
 
-        #hits.fragmenter.charlimit = None
+        hits.fragmenter.charlimit = None
         hits.fragmenter.maxchars = 200
         hits.fragmenter.surround = 40
         id_list = '('+ ', '.join([str(result.get('id')) for result in hits])+')'
