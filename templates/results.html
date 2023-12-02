@@ -9,7 +9,7 @@
 <body>
     <header>
         <div id="searchContainer">
-            <span><a href="/" style="color: inherit; text-decoration: inherit;">Search Engine</a></span>
+            <span><a href="{{ url_for('search_page')}}" style="color: inherit; text-decoration: inherit;">Search Engine</a></span>
             <input type="text" id="searchInput" onkeyup="enableButton()" placeholder="Search...">
             <input type="text" id="advSearchInput" placeholder="Website (optional)">
             <button id="searchBtn" onclick="search()" disabled>Search</button>
